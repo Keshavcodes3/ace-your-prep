@@ -1,12 +1,16 @@
 export type Config = {
     PORT: number;
     NODE_ENV: "development" | "production" | "test";
+
     MONGO_URI: string;
+
     JWT_SECRET: string;
     JWT_EXPIRES_IN: string;
 
-};
+    JWT_REFRESH_SECRET: string;
+    JWT_REFRESH_EXPIRES_IN: string;
 
+};
 
 
 export const envConfig: Config = {
@@ -15,4 +19,6 @@ export const envConfig: Config = {
     MONGO_URI: process.env.MONGO_URI || "",
     JWT_SECRET: process.env.JWT_SECRET || "",
     JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || "15m",
+    JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || "",
+    JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
 };

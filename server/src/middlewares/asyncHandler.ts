@@ -4,10 +4,12 @@ type AsyncController = (
     req: Request,
     res: Response,
     next: NextFunction
-) => Promise<void>;
+) => Promise<Response | void>;
 
 export const asyncHandler =
     (controller: AsyncController) =>
-        (req: Request, res: Response, next: NextFunction): void => {
-            Promise.resolve(controller(req, res, next)).catch(next);
+        (req: Request, res: Response, next: NextFunction) => {
+            Promise.resolve(
+                controller(req, res, next)
+            ).catch(next);
         };

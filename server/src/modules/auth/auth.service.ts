@@ -2,6 +2,7 @@ import { userRepository } from "./auth.repository.js";
 import type { RegisterInput, LoginInput } from "./auth.types.js";
 import bcrypt from "bcrypt";
 import { ApiError } from "@/middlewares/apiError.js";
+import { emailQueue } from "@/infrastructure/Bull/Email/email.queue.js";
 class AuthService {
     async register(data: RegisterInput) {
         const existingUser = await userRepository.findByEmail(
@@ -25,6 +26,10 @@ class AuthService {
             ...data,
             password: hashedPassword,
         });
+        await emailQueue.add("email-queue", {
+            name: user.name,
+            email: user.email
+        })
 
         return {
             id: user._id,

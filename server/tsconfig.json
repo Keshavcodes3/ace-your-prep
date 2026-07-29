@@ -1,10 +1,10 @@
 {
+  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
+    // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
+    // Path Aliases
     "baseUrl": "./src",
     "paths": {
       "@/*": [
@@ -13,8 +13,8 @@
       "@config/*": [
         "config/*"
       ],
-      "@domains/*": [
-        "domains/*"
+      "@module/*": [
+        "module/*"
       ],
       "@shared/*": [
         "shared/*"
@@ -26,24 +26,31 @@
         "container/*"
       ]
     },
+    // Environment Settings
+    "module": "nodenext",
+    "target": "esnext",
+    "types": [],
+    // For nodejs:
+    "lib": [
+      "esnext"
+    ],
     "types": [
       "node"
     ],
-    "strict": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
+    // Other Outputs
     "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+    // Style Options
+    "strict": true,
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": true,
     "isolatedModules": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true
+  }
 }

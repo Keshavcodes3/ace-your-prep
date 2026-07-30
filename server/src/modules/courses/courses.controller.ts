@@ -2,17 +2,34 @@ import { type Request, type Response } from "express";
 import { courseService } from "./courses.service.js";
 import { asyncHandler } from "@/middlewares/asyncHandler.js";
 import { ApiResponse } from "@/middlewares/apiResponse.js";
-
+import { ApiError } from "@/middlewares/apiError.js";
 class CourseController {
 
 
     createCourse = asyncHandler(
         async (req: Request, res: Response) => {
 
+            const userId = (req as any).user?.userId;
+
+            if (!userId) {
+                throw new ApiError("User ID is required", 401, "UNAUTHORIZED");
+            }
+
+            const { title, description, category, difficulty } = req.body;
+
+            if (!title || !description || !category || !difficulty) {
+                throw new ApiError("Missing required fields", 400, "MISSING_FIELDS");
+            }
+
+            const courseData = {
+                ...req.body,
+                isPublished: req.body.isPublished || false
+            };
+
             const course =
                 await courseService.createCourse(
-                    req.body,
-                    (req as any).user.userId
+                    courseData,
+                    userId
                 );
 
 

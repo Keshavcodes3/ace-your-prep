@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { courseController } from "./courses.controller.js";
 import { authMiddleware } from "@/middlewares/auth.middleware.js";
+import { authorize } from "@/middlewares/authorize.js";
 
 
 const router = Router();
@@ -10,24 +11,28 @@ const router = Router();
 
 router.get(
     "/",
+    authMiddleware,
     courseController.getCourses
 );
 
 
 router.get(
     "/published",
+    authMiddleware,
     courseController.getPublishedCourses
 );
 
 
 router.get(
     "/slug/:slug",
+    authMiddleware,
     courseController.getCourseBySlug
 );
 
 
 router.get(
     "/:id",
+    authMiddleware,
     courseController.getCourse
 );
 
@@ -37,6 +42,7 @@ router.get(
 router.post(
     "/",
     authMiddleware,
+    authorize("admin"),
     courseController.createCourse
 );
 
@@ -44,13 +50,16 @@ router.post(
 router.patch(
     "/:id",
     authMiddleware,
+    authorize("admin"),
     courseController.updateCourse
 );
 
 
 router.patch(
     "/:id/publish",
+
     authMiddleware,
+    authorize("admin"),
     courseController.publishCourse
 );
 
@@ -58,6 +67,7 @@ router.patch(
 router.delete(
     "/:id",
     authMiddleware,
+    authorize("admin"),
     courseController.deleteCourse
 );
 

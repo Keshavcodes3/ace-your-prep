@@ -1,3 +1,4 @@
+import type { Types } from "mongoose";
 import { CourseModel, type ICourse } from "./courses.model.js";
 import type { CreateCourseInput, UpdateCourseInput } from "./courses.types.js";
 
@@ -6,12 +7,11 @@ class CourseRepository {
 
     async createCourse(
         data: CreateCourseInput & {
-            instructor: string;
+            instructor: Types.ObjectId;
             slug: string;
         }
     ): Promise<ICourse> {
         const course = await CourseModel.create(data);
-
         return course;
     }
 

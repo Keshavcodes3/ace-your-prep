@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { courseRepository } from "./courses.repository.js";
 import type {
     CreateCourseInput,
@@ -31,16 +32,30 @@ class CourseService {
             );
         }
 
+        if (!mongoose.Types.ObjectId.isValid(instructorId)) {
+            throw new ApiError(
+                "Invalid instructor ID",
+                400,
+                "INVALID_INSTRUCTOR_ID"
+            );
+        }
 
-        const course =
-            await courseRepository.createCourse({
-                ...data,
-                slug,
-                instructor: instructorId,
-            });
-
-
-        return course;
+        try {
+            const course =
+                await courseRepository.createCourse({
+                    ...data,
+                    slug,
+                    instructor: new mongoose.Types.ObjectId(instructorId),
+                });
+            return course;
+        } catch (error) {
+            console.error("Error creating course:", error);
+            throw new ApiError(
+                "Failed to create course",
+                500,
+                "COURSE_CREATION_FAILED"
+            );
+        }
     }
 
 
@@ -48,21 +63,30 @@ class CourseService {
     async getCourseById(
         id: string
     ) {
+        try {
+            const course =
+                await courseRepository.findById(id);
 
-        const course =
-            await courseRepository.findById(id);
 
+            if (!course) {
+                throw new ApiError(
+                    "Course not found",
+                    404,
+                    "COURSE_NOT_FOUND"
+                );
+            }
 
-        if (!course) {
-            throw new ApiError(
-                "Course not found",
-                404,
-                "COURSE_NOT_FOUND"
-            );
+            return course;
+        } catch (error) {
+            if (error instanceof mongoose.Error.CastError) {
+                throw new ApiError(
+                    "Invalid course ID",
+                    400,
+                    "INVALID_COURSE_ID"
+                );
+            }
+            throw error;
         }
-
-
-        return course;
     }
 
 
@@ -110,24 +134,33 @@ class CourseService {
         id: string,
         data: UpdateCourseInput
     ) {
+        try {
+            const course =
+                await courseRepository.updateCourse(
+                    id,
+                    data
+                );
 
-        const course =
-            await courseRepository.updateCourse(
-                id,
-                data
-            );
 
+            if (!course) {
+                throw new ApiError(
+                    "Course not found",
+                    404,
+                    "COURSE_NOT_FOUND"
+                );
+            }
 
-        if (!course) {
-            throw new ApiError(
-                "Course not found",
-                404,
-                "COURSE_NOT_FOUND"
-            );
+            return course;
+        } catch (error) {
+            if (error instanceof mongoose.Error.CastError) {
+                throw new ApiError(
+                    "Invalid course ID",
+                    400,
+                    "INVALID_COURSE_ID"
+                );
+            }
+            throw error;
         }
-
-
-        return course;
     }
 
 
@@ -135,26 +168,35 @@ class CourseService {
     async publishCourse(
         id: string
     ) {
+        try {
+            const course =
+                await courseRepository.updateCourse(
+                    id,
+                    {
+                        isPublished: true,
+                    }
+                );
 
-        const course =
-            await courseRepository.updateCourse(
-                id,
-                {
-                    isPublished: true,
-                }
-            );
 
+            if (!course) {
+                throw new ApiError(
+                    "Course not found",
+                    404,
+                    "COURSE_NOT_FOUND"
+                );
+            }
 
-        if (!course) {
-            throw new ApiError(
-                "Course not found",
-                404,
-                "COURSE_NOT_FOUND"
-            );
+            return course;
+        } catch (error) {
+            if (error instanceof mongoose.Error.CastError) {
+                throw new ApiError(
+                    "Invalid course ID",
+                    400,
+                    "INVALID_COURSE_ID"
+                );
+            }
+            throw error;
         }
-
-
-        return course;
     }
 
 
@@ -162,21 +204,30 @@ class CourseService {
     async deleteCourse(
         id: string
     ) {
+        try {
+            const course =
+                await courseRepository.deleteCourse(id);
 
-        const course =
-            await courseRepository.deleteCourse(id);
 
+            if (!course) {
+                throw new ApiError(
+                    "Course not found",
+                    404,
+                    "COURSE_NOT_FOUND"
+                );
+            }
 
-        if (!course) {
-            throw new ApiError(
-                "Course not found",
-                404,
-                "COURSE_NOT_FOUND"
-            );
+            return course;
+        } catch (error) {
+            if (error instanceof mongoose.Error.CastError) {
+                throw new ApiError(
+                    "Invalid course ID",
+                    400,
+                    "INVALID_COURSE_ID"
+                );
+            }
+            throw error;
         }
-
-
-        return course;
     }
 
 }

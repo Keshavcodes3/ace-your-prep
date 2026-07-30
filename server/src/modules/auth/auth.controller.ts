@@ -14,7 +14,8 @@ class AuthController {
             const payload = {
                 userId: user.id.toString(),
                 name: user.name,
-                email: user.email
+                email: user.email,
+                role: user.role
             }
             const token = generateAccessToken(payload)
             res.cookie("token", token)
@@ -36,7 +37,8 @@ class AuthController {
             const payload = {
                 userId: user.id.toString(),
                 name: user.name,
-                email: user.email
+                email: user.email,
+                role: user.role
             }
             const token = generateAccessToken(payload)
             res.cookie("token", token)
